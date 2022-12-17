@@ -92,10 +92,26 @@ BEGIN
     IF p1=='EMPTY' || p2=='EMPTY' THEN
     RETURN FALSE;
     END IF;
-
-    IF p1='r' AND p2 ='s' THEN --P1
 	
+	s1 :=(select g.pl1_score from game_status g where board_id=g.board_id);
+	s2 :=(select g.pl2_score from game_status g where board_id=g.board_id);
+	
+	IF s1=3 or s2=3 then return false;
+	
+    IF p1='r' AND p2 ='s'
+	THEN s1=s1+1;
+	ELSIF p1='s' AND p2 ='p'
+	THEN s1=s1+1;
+	ELSIF p1='p' AND p2 ='r'
+	THEN s1=s1+1;
+	ELSE p2='r' AND p1 ='s'
+	THEN s2=s2+1;
+	ELSIF p2='s' AND p1 ='p'
+	THEN s2=s2+1;
+	ELSIF p2='p' AND p1 ='r'
+	THEN s2=s2+1;
 	END IF;
+	
 END;
 $function$;
 
