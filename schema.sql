@@ -1,53 +1,76 @@
-CREATE OR REPLACE PROCEDURE create_users_table()
+DROP TABLE IF EXISTS game_status;
+DROP TABLE IF EXISTS board;
+DROP TABLE IF EXISTS users;
+DROP TYPE IF EXISTS move;
+DROP TYPE IF EXISTS status;
+CREATE TYPE move as ENUM ('r','p','s','EMPTY');
+CREATE TYPE status as ENUM('not_active','initialized','started','ended','aborted');
+
+CREATE OR REPLACE FUNCTION create_users_table()
+RETURNS void
 LANGUAGE plpgsql
 AS $function$
 BEGIN
 DROP TABLE IF EXISTS users;
-CREATE OR REPLACE TABLE  users(
-  id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE users(
+  id SERIAL PRIMARY KEY,
   username varchar(15),
-  sessionID varchar(50),
+  sessionID varchar(50)
 );
 END;
 $function$;
 
-CREATE OR REPLACE PROCEDURE create_board()
+CREATE OR REPLACE FUNCTION create_board()
+RETURNS void
 LANGUAGE plpgsql
 AS $function$
 BEGIN
 DROP TABLE IF EXISTS board;
-CREATE OR REPLACE TABLE board(
-    board_id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE board(
+    id SERIAL PRIMARY KEY,
     player1ID INT,
     player2ID INT,
-    move1 enum ('r','p','s','EMPTY') DEFAULT 'EMPTY',
-    move2 enum ('r','p','s','EMPTY') DEFAULT 'EMPTY',
+    move1 move DEFAULT 'EMPTY',
+    move2 move DEFAULT 'EMPTY',
+	CONSTRAINT fk_player1 
+		FOREIGN KEY(player1ID) 
+			REFERENCES users(id) ON DELETE CASCADE,
+	CONSTRAINT fk_player2
+		FOREIGN KEY(player2ID) 
+			REFERENCES users(id) ON DELETE CASCADE
 );
 END;
 $function$;
 
-CREATE OR REPLACE PROCEDURE create_status()
+CREATE OR REPLACE FUNCTION create_status()
+RETURNS void
 LANGUAGE plpgsql
 AS $function$
 BEGIN
 DROP TABLE IF EXISTS game_status;
-CREATE OR REPLACE TABLE game_status(
-    status enum('not_active','initialized','started','ended','aborted') NOT NULL DEFAULT 'not_active',
+CREATE TABLE game_status(
+	id SERIAL PRIMARY KEY,
+    status status NOT NULL DEFAULT 'not_active',
     board_id INT,
     pl1_score INT DEFAULT 0,
     pl2_score INT DEFAULT 0,
-    last_change timestamp NULL DEFAULT current_timestamp()
+    last_change timestamp NULL DEFAULT Current_timestamp,
+	CONSTRAINT fk_board 
+		FOREIGN KEY(board_id) 
+			REFERENCES board(id) ON DELETE CASCADE
 );
 END;
 $function$;
 
-CREATE OR REPLACE PROCEDURE score_players(board_id int)
+CREATE OR REPLACE FUNCTION score_players(board_id int)
 RETURNS Boolean
 LANGUAGE plpgsql
 AS $function$
     DECLARE 
-    p1 ,p2 varchar(5);--player move for this round
-    s1 ,s2 INT;--score of player 1 and 2
+    p1 varchar(5);--player move for this round
+	p2 varchar(5);--player move for this round
+    s1 INT;--score of player 1 
+	s2 INT;--score of player 2
 BEGIN
     p1 := (select b.move1 from board b where b.board_id=board_id);
 	p2 := (select b.move2 from board b where b.board_id=board_id);
@@ -57,6 +80,12 @@ BEGIN
     END IF;
 
     IF p1='r' AND p2 ='s' THEN --P1
+	
+	END IF;
 END;
 $function$;
 
+SELECT create_users_table();
+SELECT create_board();
+SELECT create_status();
+--SELECT score_players();
