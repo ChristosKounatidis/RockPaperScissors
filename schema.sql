@@ -41,47 +41,22 @@ CREATE OR REPLACE TABLE game_status(
 END;
 $function$;
 
-
-
-DELIMITER $$
-CREATE OR REPLACE PROCEDURE create_status()
-BEGIN
-CREATE OR REPLACE TABLE game_status(
-    status enum('not_active','initialized','started','ended','aborted') NOT NULL DEFAULT 'not_active',
-    board_id INT,
-    pl1_score INT DEFAULT 0,
-    pl2_score INT DEFAULT 0,
-    last_change timestamp NULL DEFAULT current_timestamp()
-);
-END $$
-DELIMITER ;
-
-DELIMITER $$
-CREATE OR REPLACE PROCEDURE f1(board_id int)
---boolean
-BEGIN
-    DECLARE p1 ,p2 varchar(5);--player move for this round
-    DECLARE s1 ,s2 INT;--score of player 1 and 2
-
-    SET p1 :=(SELECT b.move1 from board b where b.board_id=board_id);
-    SET p2 :=(SELECT b.move2 from board b where b.board_id=board_id);
-    SET s1 :=(SELECT g.pl1_score from game_status g where g.board_id=board_id);
-    SET s2 :=(SELECT g.pl2_score from game_status g where g.board_id=board_id);
-
-    
-    IF s1+s2==5 THEN
-    RETURN FALSE;
-    ELSE IF p1!='EMPTY' AND p2!='EMPTY' THEN
-    RETURN FALSE;
-    ELSE IF     
-    END IF; 
-END $$
-DELIMITER ;
-
-
+CREATE OR REPLACE PROCEDURE score_players(board_id int)
+RETURNS Boolean
 LANGUAGE plpgsql
 AS $function$
-declare
+    DECLARE 
+    p1 ,p2 varchar(5);--player move for this round
+    s1 ,s2 INT;--score of player 1 and 2
 BEGIN
-    END;
+    p1 := (select b.move1 from board b where b.board_id=board_id);
+	p2 := (select b.move2 from board b where b.board_id=board_id);
+	
+    IF p1=='EMPTY' || p2=='EMPTY' THEN
+    RETURN FALSE;
+    END IF;
+
+    IF p1='r' AND p2 ='s' THEN --P1
+END;
 $function$;
+
