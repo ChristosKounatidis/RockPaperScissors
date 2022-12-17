@@ -1,10 +1,21 @@
-DROP TABLE IF EXISTS game_status;
-DROP TABLE IF EXISTS board;
-DROP TABLE IF EXISTS users;
-DROP TYPE IF EXISTS move;
-DROP TYPE IF EXISTS status;
 CREATE TYPE move as ENUM ('r','p','s','EMPTY');
 CREATE TYPE status as ENUM('not_active','initialized','started','ended','aborted');
+
+
+CREATE OR REPLACE FUNCTION init()
+RETURNS void
+LANGUAGE plpgsql
+AS $function$
+BEGIN
+	DROP TABLE IF EXISTS game_status;
+	DROP TABLE IF EXISTS board;
+	DROP TABLE IF EXISTS users;
+	PERFORM create_users_table();
+	PERFORM create_board();
+	PERFORM create_status();
+END;
+$function$;
+
 
 CREATE OR REPLACE FUNCTION create_users_table()
 RETURNS void
@@ -116,10 +127,7 @@ BEGIN
 END;
 $function$;
 
-SELECT create_users_table();
-SELECT create_board();
-SELECT create_status();
---SELECT score_players();
+select init();
 --test--test--test--test--test--test--test--test--test
 insert into users(username) values('xristos');
 insert into users(username) values('stratos');
