@@ -1,8 +1,8 @@
 CREATE OR REPLACE PROCEDURE create_users_table()
 LANGUAGE plpgsql
 AS $function$
-declare
 BEGIN
+DROP TABLE IF EXISTS users;
 CREATE OR REPLACE TABLE  users(
   id INT PRIMARY KEY AUTO_INCREMENT,
   username varchar(15),
@@ -11,9 +11,11 @@ CREATE OR REPLACE TABLE  users(
 END;
 $function$;
 
-DELIMITER $$
 CREATE OR REPLACE PROCEDURE create_board()
+LANGUAGE plpgsql
+AS $function$
 BEGIN
+DROP TABLE IF EXISTS board;
 CREATE OR REPLACE TABLE board(
     board_id INT PRIMARY KEY AUTO_INCREMENT,
     player1ID INT,
@@ -21,8 +23,25 @@ CREATE OR REPLACE TABLE board(
     move1 enum ('r','p','s','EMPTY') DEFAULT 'EMPTY',
     move2 enum ('r','p','s','EMPTY') DEFAULT 'EMPTY',
 );
-END $$
-DELIMITER ;
+END;
+$function$;
+
+CREATE OR REPLACE PROCEDURE create_status()
+LANGUAGE plpgsql
+AS $function$
+BEGIN
+DROP TABLE IF EXISTS game_status;
+CREATE OR REPLACE TABLE game_status(
+    status enum('not_active','initialized','started','ended','aborted') NOT NULL DEFAULT 'not_active',
+    board_id INT,
+    pl1_score INT DEFAULT 0,
+    pl2_score INT DEFAULT 0,
+    last_change timestamp NULL DEFAULT current_timestamp()
+);
+END;
+$function$;
+
+
 
 DELIMITER $$
 CREATE OR REPLACE PROCEDURE create_status()
