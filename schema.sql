@@ -1,13 +1,15 @@
-DELIMITER $$
 CREATE OR REPLACE PROCEDURE create_users_table()
+LANGUAGE plpgsql
+AS $function$
+declare
 BEGIN
 CREATE OR REPLACE TABLE  users(
   id INT PRIMARY KEY AUTO_INCREMENT,
   username varchar(15),
   sessionID varchar(50),
 );
-END $$
-DELIMITER ;
+END;
+$function$;
 
 DELIMITER $$
 CREATE OR REPLACE PROCEDURE create_board()
@@ -56,3 +58,11 @@ BEGIN
     END IF; 
 END $$
 DELIMITER ;
+
+
+LANGUAGE plpgsql
+AS $function$
+declare
+BEGIN
+    END;
+$function$;
