@@ -62,6 +62,20 @@ CREATE TABLE game_status(
 END;
 $function$;
 
+----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION play_hand(hand move, player int, boardid int)
+RETURNS void
+LANGUAGE plpgsql
+AS $function$
+BEGIN
+    UPDATE board SET move1 = hand WHERE id = boardid AND player = 1;
+    UPDATE board SET move2 = hand WHERE id = boardid AND player = 2;
+END;
+$function$;
+
+----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION score_players(board_id int)
 RETURNS Boolean
 LANGUAGE plpgsql
@@ -89,3 +103,13 @@ SELECT create_users_table();
 SELECT create_board();
 SELECT create_status();
 --SELECT score_players();
+--test--test--test--test--test--test--test--test--test
+insert into users(username) values('xristos');
+insert into users(username) values('stratos');
+select * from users;
+insert into board(player1id, player2id) values(1,2);
+select * from board;
+SELECT play_hand('r',1,1);
+SELECT play_hand('p',2,1);
+
+--test--test--test--test--test--test--test--test--test
