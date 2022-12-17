@@ -71,6 +71,7 @@ AS $function$
 BEGIN
     UPDATE board SET move1 = hand WHERE id = boardid AND player = 1;
     UPDATE board SET move2 = hand WHERE id = boardid AND player = 2;
+	PERFORM score_players(boardid);
 END;
 $function$;
 
@@ -86,17 +87,17 @@ AS $function$
     s1 INT;--score of player 1 
 	s2 INT;--score of player 2
 BEGIN
-    p1 := (select b.move1 from board b where b.board_id=board_id);
-	p2 := (select b.move2 from board b where b.board_id=board_id);
+    p1 := (select b.move1 from board b where b.id=board_id);
+	p2 := (select b.move2 from board b where b.id=board_id);
 	
-    IF p1=='EMPTY' || p2=='EMPTY' THEN
+    IF p1='EMPTY' || p2='EMPTY' THEN
     RETURN FALSE;
     END IF;
 	
 	s1 :=(select g.pl1_score from game_status g where board_id=g.board_id);
 	s2 :=(select g.pl2_score from game_status g where board_id=g.board_id);
 	
-	IF s1=3 or s2=3 then return false;
+	IF s1=3 or s2=3 then return false;END IF;
 	
     IF p1='r' AND p2 ='s'
 	THEN s1=s1+1;
@@ -104,7 +105,7 @@ BEGIN
 	THEN s1=s1+1;
 	ELSIF p1='p' AND p2 ='r'
 	THEN s1=s1+1;
-	ELSE p2='r' AND p1 ='s'
+	ELSIF p2='r' AND p1 ='s'
 	THEN s2=s2+1;
 	ELSIF p2='s' AND p1 ='p'
 	THEN s2=s2+1;
