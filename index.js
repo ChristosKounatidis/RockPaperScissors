@@ -1,4 +1,4 @@
-import { test } from './connection.js';
+const test = require('./connection.js')
 
 test();
 
