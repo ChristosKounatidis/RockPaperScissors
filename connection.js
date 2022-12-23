@@ -1,30 +1,25 @@
-const user = process.env['user'];
-const host = process.env['host'];
-const database = process.env['database'];
-const password = process.env['password'];
-const port = process.env['port'];
-
-console.log(user);
-console.log(host);
-console.log(database);
-console.log(password);
-console.log(port);
-
-//credentials = require('./credentials.js');
 const { Client } = require('pg');
+const dotenv = require("dotenv")
+dotenv.config()
 
-const client = new Client({
-    user,
-    host,  
-    database,
-    password,
-    port
-});
-const mySecret = process.env['user']
+export function test(){
+const connectDb = async () => {
+  try {
+    const client = new Client({
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT
+  });
 
-client.connect(function(err) {
-    if (err) throw err;
-      console.log("Connected!");
-    if (err) console.log("Not Connected");
-    
-});
+  await client.connect();
+  const res = await client.query('SELECT * FROM users');
+  console.log(res);
+  await client.end();
+  } catch (error) {
+  console.log(error);
+  }
+  }
+  connectDb();
+}

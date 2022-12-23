@@ -1,2 +1,4 @@
-connection = require('./connection.js');
+import { test } from './connection.js';
+
+test();
 
