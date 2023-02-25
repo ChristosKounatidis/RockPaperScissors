@@ -24,4 +24,4 @@ const connectDb = async () => {
   connectDb();
 }
 
-module.exports = test;
+module.exports = Client;
