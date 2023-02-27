@@ -3,6 +3,8 @@
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: #313131;
+    border: 3px solid black;
 }
 
 #info {
@@ -10,9 +12,34 @@
     color: white; 
 }
 
+#moves button {
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    background-size: cover;
+    width: 100px;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+  }
+
+  #rock {
+    background-image: url('./pictures/rock.png');
+  }
+  
+  #paper {
+    background-image: url('./pictures/paper.png');
+  }
+  
+  #scissors {
+    background-image: url('./pictures/scissors.png');
+  }
+
 body {
     background-color: #4e4a4a;
     font-family: Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    margin: 0;
+    padding: 0;
   }
 
   
