@@ -7,7 +7,7 @@ Client.connect();
 
 const query = 
 {
-    text:"SELECT * FROM users;",
+    text:"SELECT * FROM $1;",
     values:[table],    
 }
 
